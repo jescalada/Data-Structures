@@ -20,10 +20,10 @@ class DynamicArray:
         return self._A[k]
 
     def __str__(self):
-        result = "["
-        for i in range(self._n):
-            result += str(self._A[i]) + ", "
-        return result[:-2] + "]"
+        temp = ['[']
+        temp.extend(f'{str(self._A[i])}, ' for i in range(self._n))
+        temp.append(']')
+        return "".join(temp)
 
     def append(self, obj):
         if self._n == self._capacity:
@@ -31,13 +31,22 @@ class DynamicArray:
         self._A[self._n] = obj
         self._n += 1
 
+    def insert(self, k, obj):
+        if self._n == self._capacity:
+            self._resize(2 * self._capacity)
+        for j in range(self._n, k, -1):  # Shifts all the right side elements one step to the right
+            self._A[j] = self._A[j-1]
+        self._A[k] = obj
+        self._n += 1
+
     def _resize(self, c):
         """Resize internal array to capacity c"""
-        B = self._make_array(c) # Creates a new array
-        for k in range(self._n): # Copies the values of the current array into the new array
+        B = self._make_array(c)  # Creates a new array
+        for k in range(self._n):  # Copies the values of the current array into the new array
             B[k] = self._A[k]
-        self._A = B # Sets the array in this object to the new array
-        self._capacity = c # Sets the new capacity of the array
+        self._A = B  # Sets the array in this object to the new array
+        self._capacity = c  # Sets the new capacity of the array
 
     def _make_array(self, c):
+        """Return new array with capacity c"""
         return (c * ctypes.py_object)()
